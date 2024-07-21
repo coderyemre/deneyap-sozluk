@@ -49,11 +49,11 @@
           <form action="kaydol.php" method="POST">
             <div class="mb-3">
               <label for="username" class="form-label">Kullanıcı Adı</label>
-              <input type="text" class="form-control" id="username" placeholder="Kullanıcı adınızı giriniz">
+              <input type="text" class="form-control" id="username" name="username" placeholder="Kullanıcı adınızı giriniz" required>
             </div>
             <div class="mb-3">
               <label for="password" class="form-label">Şifre</label>
-              <input type="password" class="form-control" id="password" placeholder="Şifrenizi giriniz">
+              <input type="password" class="form-control" id="password" name="password" placeholder="Şifrenizi giriniz" required>
             </div>
             <button type="submit" class="btn btn-primary w-100">Kaydol</button>
           </form>
