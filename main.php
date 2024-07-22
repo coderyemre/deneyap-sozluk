@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['username'])) {
+    header('Location: giris.php');
+    exit();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,10 +54,10 @@
           <a class="nav-link active" aria-current="page" href="#">Ana Sayfa</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="giris.html">Giriş</a>
+          <a class="nav-link" href="logout.php">Çıkış yap</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="kaydol.html">Kaydol</a>
+          <a class="nav-link" href="setprofilephoto.php">SetProfilePhoto</a>
         </li>
       </ul>
     </div>
@@ -84,7 +94,8 @@
 
       <?php 
         include "utility.php";
-       PrepareTopicsForFirstLogin();
+      PrepareTopicsForFirstLogin();
+      
       ?>
 
       <!-- Diğer Kartlar Burada Devam Edecek -->
@@ -123,12 +134,21 @@
               <p class="card-text"><b>Comments:</b> 83,123</p>
             </div>
           </div>
+          <div class="card mb-2">
+    <div class="card-body">
+      <h5 class="card-title">Create Post</h5>
+      <a href="create_post.php" class="btn btn-primary w-100">Yeni Gönderi Oluştur</a>
+    </div>
+  </div>
+</div>
         </div>
       </div>
     </div>
-
+    <div class="item">
+ 
   </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
