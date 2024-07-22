@@ -1,7 +1,4 @@
-<?php 
-echo "MERHABA"
 
-?>
 <?php 
 $allow_register = true;
 $host = 'localhost'; 
@@ -106,7 +103,7 @@ if ($stmt->affected_rows > 0 && $allow_register) {
     echo '<body>';
     echo '<div class="message-box">';
     echo '<h2>aramıza hoşgeldin deneyaplı</h2>';
-    echo '<a class="redirect-link" href="main.html">Ana Sayfaya Dön</a>';
+    echo '<a class="redirect-link" href="giris.php">Giriş yap !</a>';
     echo '</div>';
     echo '</body>';
     echo '</html>';
@@ -127,7 +124,7 @@ if ($stmt->affected_rows > 0 && $allow_register) {
     echo '<body>';
     echo '<div class="message-box">';
     echo '<h2>kaydolamadın nigga galiba kayıtlar kapandı </h2>';
-    echo '<a class="redirect-link" href="kaydol.php">Tekrar Deneyin</a>';
+    echo '<a class="redirect-link" href="kaydol.html">Tekrar Deneyin</a>';
     echo '</div>';
     echo '</body>';
     echo '</html>';
