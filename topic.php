@@ -92,14 +92,15 @@ if (!isset($_SESSION['username'])) {
 <!-- Üst Menü Sonu -->
 
 <?php 
+        include "conn.php";
         if (isset($_GET['topic_id'])) {
             $topic_id = intval($_GET['topic_id']);
         } else {
             die("topic id yok");
         }
         include "utility.php";
-        InitTopic($topic_id);
-        SimulateReplys($topic_id);
+        InitTopic($topic_id,$conn);
+        SimulateReplys($topic_id,$conn);
       ?>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>

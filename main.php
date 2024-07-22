@@ -1,5 +1,7 @@
 <?php
 session_start();
+include "conn.php";
+echo "<script type ='text/JavaScript'>alert('Hoşgeldin ".$_SESSION['username']."')</script>";  
 
 if (!isset($_SESSION['username'])) {
     header('Location: giris.php');
@@ -12,7 +14,7 @@ if (!isset($_SESSION['username'])) {
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>bs5 forum list - Bootdey.com</title>
+<title>En Kral Forum</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <style type="text/css">
@@ -63,6 +65,8 @@ if (!isset($_SESSION['username'])) {
     </div>
   </div>
 </nav>
+
+
 <!-- Üst Menü Sonu -->
 
 <div class="container">
@@ -91,10 +95,18 @@ if (!isset($_SESSION['username'])) {
           </div>
         </div>
       </div>
-
+        <div class="container mt-3">
+  <div class="row">
+    <div class="col-lg-12 mb-3"> 
+      <div class="d-flex align-items-end justify-content-between"> 
+        <a href="tumpostlar.php" class="btn btn-primary">Tüm Postlar</a>
+      </div>
+    </div>
+  </div>
+</div>
       <?php 
         include "utility.php";
-      PrepareTopicsForFirstLogin();
+      PrepareTopicsForFirstLogin($conn);
       
       ?>
 

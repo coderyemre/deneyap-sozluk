@@ -1,15 +1,7 @@
 <?php
 session_start();
 
-$host = 'localhost';
-$dbname = 'yorukdatabase';
-$user = 'root';
-$pass = '';
-$conn = new mysqli($host, $user, $pass, $dbname);
-$conn->set_charset("utf8");
-if ($conn->connect_error) {
-    die("Bağlantı hatası: " . $conn->connect_error);
-}
+include "conn.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profile_pic'])) {
     $target_dir = "uploads/";

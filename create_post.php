@@ -8,16 +8,8 @@ if (!isset($_SESSION['username'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Veritabanı bağlantısı
-    $host = 'localhost';
-    $dbname = 'yorukdatabase';
-    $user = 'root';
-    $pass = '';
-    $conn = new mysqli($host, $user, $pass, $dbname);
-    $conn->set_charset("utf8");
-    if ($conn->connect_error) {
-        die("Bağlantı hatası: " . $conn->connect_error);
-    }
 
+    include "conn.php";
     // Başlık ve içeriği al
     $title = $_POST['title'];
     $content = $_POST['content'];
