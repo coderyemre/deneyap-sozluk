@@ -1,15 +1,7 @@
 <?php
-function createTopic($author, $title, $content) {
-    $host = 'localhost';
-    $dbname = 'yorukdatabase';
-    $user = 'root';
-    $pass = '';
-    $conn = new mysqli($host, $user, $pass, $dbname);
-    $conn->set_charset("utf8");
-    if ($conn->connect_error) {
-        die("Bağlantı hatası: " . $conn->connect_error);
-    }
+include "conn.php";
 
+function createTopic($author, $title, $content,$conn) {
     // Veritabanına eklemek için SQL sorgusu
     $sql = "INSERT INTO topics (post_author, post_title, post_content, post_date) VALUES (?, ?, ?, ?)";
 
@@ -24,12 +16,8 @@ function createTopic($author, $title, $content) {
     $stmt->close();
     $conn->close();
 }
-function PrepareTopicsForFirstLogin() {
-    $host = 'localhost';
-    $dbname = 'yorukdatabase';
-    $user = 'root';
-    $pass = '';
-    $conn = new mysqli($host, $user, $pass, $dbname);
+function PrepareTopicsForFirstLogin($conn) {
+    
     $conn->set_charset("utf8");
     if ($conn->connect_error) {
         die("Bağlantı hatası: " . $conn->connect_error);
@@ -69,16 +57,9 @@ function PrepareTopicsForFirstLogin() {
     $stmt->close();
     $conn->close();
 }
-function InitTopic($topic_id) {
-    $host = 'localhost';
-    $dbname = 'yorukdatabase';
-    $user = 'root';
-    $pass = '';
-    $conn = new mysqli($host, $user, $pass, $dbname);
-    $conn->set_charset("utf8");
-    if ($conn->connect_error) {
-        die("Bağlantı hatası: " . $conn->connect_error);
-    }
+function InitTopic($topic_id,$conn) {
+
+
 
     $sql = "SELECT post_author, post_title, post_content, post_date FROM topics WHERE topic_id = ?";
     $stmt = $conn->prepare($sql);
@@ -93,7 +74,9 @@ function InitTopic($topic_id) {
         echo '<h5>';
         echo '<a href="topic.php?topic_id=  ' . urlencode($topic_id) . '" class="text-primary">' . htmlspecialchars($post_title) . '</a>';
         echo '</h5>';
-        displayProfilePic($author);     
+        
+        //Problem Burada Başlıyor
+        //displayProfilePic($post_author,$conn);     
         echo '<div class="text-sm op-5"><a class="text-black" href="#">' . htmlspecialchars($post_content) . '</a></div>';
         echo '<p class="text-sm"><span class="op-6">Posted</span> <span class="op-6">by</span>  </span> <a class="text-black" href="#">' . htmlspecialchars($post_author) . '</a></p>';
         echo '<span class="op-6">' . htmlspecialchars($post_date) . '</span>';
@@ -108,16 +91,9 @@ function InitTopic($topic_id) {
     $conn->close();
 }
 
-function SimulateReplys($topic_id) {
-    $host = 'localhost';
-    $dbname = 'yorukdatabase';
-    $user = 'root';
-    $pass = '';
-    $conn = new mysqli($host, $user, $pass, $dbname);
-    $conn->set_charset("utf8");
-    if ($conn->connect_error) {
-        die("Bağlantı hatası: " . $conn->connect_error);
-    }
+function SimulateReplys($topic_id,$conn) {
+
+
     $sql = "SELECT author, body, date FROM replies WHERE topic_id = ? ORDER BY date ASC";
     $stmt = $conn->prepare($sql);
 
@@ -134,7 +110,7 @@ function SimulateReplys($topic_id) {
         echo '<div class="row align-items-center">';
         echo '<div class="col-md-12 mb-3">';
         echo '<h5>';
-        displayProfilePic($author); 
+        displayProfilePic($author,$conn); 
         echo '<a href="#" class="text-primary">  ' . htmlspecialchars($author) . '</a>';
         echo '</h5>';
         echo '<div class="text-sm op-5"><a class="text-black" href="#">' . htmlspecialchars($body) . '</a></div>';
@@ -147,16 +123,12 @@ function SimulateReplys($topic_id) {
     $stmt->close();
     $conn->close();
 }
-function displayProfilePic($username) {
-    $host = 'localhost';
-    $dbname = 'yorukdatabase';
-    $user = 'root';
-    $pass = '';
-    $conn = new mysqli($host, $user, $pass, $dbname);
-    $conn->set_charset("utf8");
-    if ($conn->connect_error) {
-        die("Bağlantı hatası: " . $conn->connect_error);
-    }
+function displayProfilePic($username,$conn) {
+    
+
+
+
+
 
     $sql = "SELECT profile_pic FROM users WHERE username = ?";
     $stmt = $conn->prepare($sql);
