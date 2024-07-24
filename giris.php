@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
         $_SESSION['username'] = $user['username'];
+        $_SESSION["level"]=$user['level'];
         header('Location: main.php'); // Ana sayfaya yönlendir
         exit();
     } else {

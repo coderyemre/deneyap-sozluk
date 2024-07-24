@@ -7,7 +7,7 @@ include "conn.php";
 $username = isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '';
 $password = isset($_POST['password']) ? htmlspecialchars($_POST['password']) : '';
 $passwordre = isset($_POST['passwordre']) ? htmlspecialchars($_POST['passwordre']) : '';
-$level = 0; // default user = 0 admin = 1 banned = -1
+$level = 0; // default user = 0 deneyap = 1 admin=2 banned = -1
 
 // check username and pass
 if ($password != $passwordre) {
