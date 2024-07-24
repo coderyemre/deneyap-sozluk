@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "conn.php";
-echo "<script type ='text/JavaScript'>alert('Hoşgeldin ".$_SESSION['username']."')</script>";  
+
 
 if (!isset($_SESSION['username'])) {
     header('Location: giris.php');
@@ -59,7 +59,7 @@ if (!isset($_SESSION['username'])) {
           <a class="nav-link" href="logout.php">Çıkış yap</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="setprofilephoto.php">SetProfilePhoto</a>
+          <a class="nav-link" href="setprofilephoto.php">Profil Fotoğrafı Ayarla</a>
         </li>
       </ul>
     </div>
@@ -77,37 +77,30 @@ if (!isset($_SESSION['username'])) {
         <div class="col-lg-6 mb-3 mb-sm-0">
           <div class="dropdown bootstrap-select form-control form-control-lg bg-white bg-op-9 text-sm w-lg-50" style="width: 100%;">
             <select class="form-control form-control-lg bg-white bg-op-9 text-sm w-lg-50" data-toggle="select" tabindex="-98">
-              <option> Categories </option>
-              <option> Learn </option>
-              <option> Share </option>
-              <option> Build </option>
+              <option> Kategoriler </option>
+              <option> Öğren </option>
+              <option> Paylaş </option>
+              <option> İnşa Et </option>
+              <option> İfşa </option>
             </select>
           </div>
         </div>
         <div class="col-lg-6 text-lg-right">
           <div class="dropdown bootstrap-select form-control form-control-lg bg-white bg-op-9 ml-auto text-sm w-lg-50" style="width: 100%;">
             <select class="form-control form-control-lg bg-white bg-op-9 ml-auto text-sm w-lg-50" data-toggle="select" tabindex="-98">
-              <option> Filter by </option>
-              <option> Votes </option>
-              <option> Replys </option>
-              <option> Views </option>
+              <option> Filtrele </option>
+              <option> Oy </option>
+              <option> Yorum Sayısı </option>
+              <option> Görüntüleme </option>
             </select>
           </div>
         </div>
       </div>
-        <div class="container mt-3">
-  <div class="row">
-    <div class="col-lg-12 mb-3"> 
-      <div class="d-flex align-items-end justify-content-between"> 
-        <a href="tumpostlar.php" class="btn btn-primary">Tüm Postlar</a>
-      </div>
-    </div>
-  </div>
-</div>
+        
       <?php 
         include "utility.php";
       PrepareTopicsForFirstLogin($conn);
-      
+      $stats = getStats($conn);
       ?>
 
       <!-- Diğer Kartlar Burada Devam Edecek -->
@@ -119,20 +112,22 @@ if (!isset($_SESSION['username'])) {
         <div class="item">
           <div class="card mb-2">
             <div class="card-body">
-              <h5 class="card-title">About</h5>
-              <p class="card-text">Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc.</p>
+              <h5 class="card-title">Hakkımızda</h5>
+              <p class="card-text">Deneyap Forum'a hoş geldiniz! Burası teknoloji meraklılarının buluşma noktası. Kod, robot, elektronik ne varsa konuştuğumuz, projelerimizi paylaştığımız bir yer. Misyonumuz mu? Eğlenmek ve öğrenmek!
+              
+              Kolpa Alarmı</p>
             </div>
           </div>
         </div>
         <div class="item">
           <div class="card mb-2">
             <div class="card-body">
-              <h5 class="card-title">Related</h5>
+              <h5 class="card-title">Öne Çıkanlar</h5>
               <div class="card-text">
-                <a href="#" class="d-block mb-2">Sapien eget</a>
-                <a href="#" class="d-block mb-2">Condimentum</a>
-                <a href="#" class="d-block mb-2">Etiam rhoncus</a>
-                <a href="#" class="d-block">Sem quam</a>
+                <a href="topic.php?topic_id=13" class="d-block mb-2">Beytullah İfşa</a>
+                <a href="#" class="d-block mb-2">Ferhat Gövercin Aslında Kim?</a>
+                <a href="#" class="d-block mb-2">Yörük Bot Dünyayı Ele Geçirecek mi?</a>
+                <a href="#" class="d-block">Ap Rammus OP mi?</a>
               </div>
             </div>
           </div>
@@ -140,10 +135,10 @@ if (!isset($_SESSION['username'])) {
         <div class="item">
           <div class="card mb-2">
             <div class="card-body">
-              <h5 class="card-title">Stats</h5>
-              <p class="card-text"><b>Total members:</b> 983,900</p>
-              <p class="card-text"><b>Posts:</b> 1,290,898</p>
-              <p class="card-text"><b>Comments:</b> 83,123</p>
+              <h5 class="card-title">İstatistikler</h5>
+              <p class="card-text"><b>Toplam Üye:</b> <?php echo number_format($stats['total_members']); ?></p>
+              <p class="card-text"><b>Konular:</b> <?php echo number_format($stats['total_posts']); ?></p>
+              <p class="card-text"><b>Yorumlar:</b> <?php echo number_format($stats['total_comments']); ?></p>
             </div>
           </div>
           <div class="card mb-2">

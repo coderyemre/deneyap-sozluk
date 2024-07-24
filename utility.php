@@ -1,6 +1,7 @@
 <?php
 include "conn.php";
 
+
 function createTopic($author, $title, $content,$conn) {
     // Veritabanına eklemek için SQL sorgusu
     $sql = "INSERT INTO topics (post_author, post_title, post_content, post_date) VALUES (?, ?, ?, ?)";
@@ -13,11 +14,18 @@ function createTopic($author, $title, $content,$conn) {
 
     $date = date('Y-m-d'); // Geçerli tarihi al
     $stmt->bind_param('ssss', $author, $title, $content, $date);
+
     $stmt->close();
-    $conn->close();
 }
 function PrepareTopicsForFirstLogin($conn) {
-    
+    $dbservername = "sql209.infinityfree.com"; 
+$dbusername = "if0_36940961"; 
+$dbpassword = "2SZZdnNbwUEGw"; 
+$dbdatabase = "if0_36940961_forum";
+
+$conn->close();
+$conn = new mysqli($dbservername, $dbusername, $dbpassword, $dbdatabase);
+$conn->set_charset("utf8");
     $conn->set_charset("utf8");
     if ($conn->connect_error) {
         die("Bağlantı hatası: " . $conn->connect_error);
@@ -55,15 +63,18 @@ function PrepareTopicsForFirstLogin($conn) {
     }
 
     $stmt->close();
-    $conn->close();
+
 }
-function InitTopic($topic_id,$conn) {
+function InitTopic($topic_id) {
+    $dbservername = "sql209.infinityfree.com"; 
+$dbusername = "if0_36940961"; 
+$dbpassword = "2SZZdnNbwUEGw"; 
+$dbdatabase = "if0_36940961_forum";
 
-
-
+$conn = new mysqli($dbservername, $dbusername, $dbpassword, $dbdatabase);
+$conn->set_charset("utf8");
     $sql = "SELECT post_author, post_title, post_content, post_date FROM topics WHERE topic_id = ?";
     $stmt = $conn->prepare($sql);
-
     $stmt->bind_param('i', $topic_id);
     $stmt->execute();
     $stmt->bind_result($post_author, $post_title, $post_content, $post_date);
@@ -75,8 +86,8 @@ function InitTopic($topic_id,$conn) {
         echo '<a href="topic.php?topic_id=  ' . urlencode($topic_id) . '" class="text-primary">' . htmlspecialchars($post_title) . '</a>';
         echo '</h5>';
         
-        //Problem Burada Başlıyor
-        //displayProfilePic($post_author,$conn);     
+       // Problem Burada Başlıyor
+        displayProfilePic($post_author);     
         echo '<div class="text-sm op-5"><a class="text-black" href="#">' . htmlspecialchars($post_content) . '</a></div>';
         echo '<p class="text-sm"><span class="op-6">Posted</span> <span class="op-6">by</span>  </span> <a class="text-black" href="#">' . htmlspecialchars($post_author) . '</a></p>';
         echo '<span class="op-6">' . htmlspecialchars($post_date) . '</span>';
@@ -88,23 +99,27 @@ function InitTopic($topic_id,$conn) {
     }
 
     $stmt->close();
-    $conn->close();
 }
 
-function SimulateReplys($topic_id,$conn) {
+function SimulateReplys($topic_id,) {
+$dbservername = "sql209.infinityfree.com"; 
+$dbusername = "if0_36940961"; 
+$dbpassword = "2SZZdnNbwUEGw"; 
+$dbdatabase = "if0_36940961_forum";
 
+$conn = new mysqli($dbservername, $dbusername, $dbpassword, $dbdatabase);
+$conn->set_charset("utf8");
 
     $sql = "SELECT author, body, date FROM replies WHERE topic_id = ? ORDER BY date ASC";
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
-        die("Sorgu hazırlanırken bir hata oluştu: " . $conn->error);
+        echo("Sorgu hazırlanırken bir hata oluştu: " . $conn->error);
     }
 
     $stmt->bind_param('i', $topic_id);
     $stmt->execute();
     $stmt->bind_result($author, $body, $date);
-
     while ($stmt->fetch()) {
         echo '<div class="card card-custom">';
         echo '<div class="row align-items-center">';
@@ -121,20 +136,27 @@ function SimulateReplys($topic_id,$conn) {
     }
 
     $stmt->close();
-    $conn->close();
 }
-function displayProfilePic($username,$conn) {
-    
-
-
-
-
-
+function displayProfilePic($username) {
+    include 'conn.php';
     $sql = "SELECT profile_pic FROM users WHERE username = ?";
     $stmt = $conn->prepare($sql);
+
+    if ($stmt === false) {
+        echo "Error preparing the statement: " . htmlspecialchars($conn->error);
+        return;
+    }
+
     $stmt->bind_param('s', $username);
-    $stmt->execute();
+    
+    if (!$stmt->execute()) {
+        echo "Error executing the statement: " . htmlspecialchars($stmt->error);
+        $stmt->close();
+        return;
+    }
+
     $stmt->bind_result($profile_pic);
+    
     if ($stmt->fetch()) {
         $profile_pic_url = "uploads/" . htmlspecialchars($profile_pic);
         echo '<img src="' . $profile_pic_url . '" class="profile-pic" >';
@@ -142,8 +164,34 @@ function displayProfilePic($username,$conn) {
         echo '<img src="uploads/default-profile-pic.jpg" class="profile-pic" >';
     }
 
+    while ($stmt->fetch()) {
+    }
+
     $stmt->close();
-    $conn->close();
+}
+
+function getStats($conn) {
+    include 'conn.php';
+    // Toplam üyeleri çek
+    $totalMembersQuery = "SELECT COUNT(*) as total_members FROM users";
+    $result = $conn->query($totalMembersQuery);
+    $totalMembers = $result->fetch_assoc()['total_members'];
+
+    // Toplam gönderileri çek
+    $totalPostsQuery = "SELECT COUNT(*) as total_posts FROM topics";
+    $result = $conn->query($totalPostsQuery);
+    $totalPosts = $result->fetch_assoc()['total_posts'];
+
+    // Toplam yorumları çek
+    $totalCommentsQuery = "SELECT COUNT(*) as total_comments FROM replies";
+    $result = $conn->query($totalCommentsQuery);
+    $totalComments = $result->fetch_assoc()['total_comments'];
+
+    return array(
+        'total_members' => $totalMembers,
+        'total_posts' => $totalPosts,
+        'total_comments' => $totalComments
+    );
 }
 
 
