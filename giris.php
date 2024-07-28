@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
         $_SESSION['username'] = $user['username'];
+        $_SESSION['id'] = $user['id'];
         $_SESSION["level"]=$user['level'];
         header('Location: main.php'); // Ana sayfaya yönlendir
         exit();
@@ -31,6 +32,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7YRLH5T99V"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7YRLH5T99V');
+</script>
 <meta charset="utf-8">
 <title>Giriş Yap - Forum</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">

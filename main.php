@@ -7,24 +7,72 @@ if (!isset($_SESSION['username'])) {
     header('Location: giris.php');
     exit();
 }
+
+
+    $userId = $_SESSION['id'];
+    $sqlNotifications = "SELECT COUNT(DISTINCT content) AS unread_count FROM notifications WHERE user_id = ? AND read_at IS NULL";
+    $stmtNotifications = $conn->prepare($sqlNotifications);
+    $stmtNotifications->bind_param("i", $userId);
+    $stmtNotifications->execute();
+    $resultNotifications = $stmtNotifications->get_result();
+    $rowNotifications = $resultNotifications->fetch_assoc();
+    $unreadCount = $rowNotifications['unread_count'];
+
+    $notificationClass = $unreadCount > 0 ? 'text-primary' : 'text-secondary'; 
+
+    $statusbar = '<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+    <a class="navbar-brand" href="#">Forum</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+        <li class="nav-item user-notification-wrapper">
+            <a class="nav-link active" href="main.php">Ana Sayfa</a>
+            <a class="nav-link" href="logout.php">Çıkış yap</a>
+            <a class="nav-link" href="setprofilephoto.php">Profil Fotoğrafı Ayarla</a>
+            <a class="nav-link ' . $notificationClass . '" href="bildirimler.php">
+                <i class="ion-ios-bell-outline ' . $notificationClass . ' icon-1x"></i>
+                ' . ($unreadCount > 0 ? '<span class="badge bg-primary">' . $unreadCount . '</span>' : '') . '
+            </a>
+            </li> 
+        </ul>
+    </div>
+    </div>
+    </nav>';
+
+    $stmtNotifications->close();
 ?>
 
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7YRLH5T99V"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7YRLH5T99V');
+</script>
 <meta charset="utf-8">
 <title>En Kral Forum</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <style type="text/css">
     body {
-        margin-top: 20px;
+        margin-top: 0px;
         background: #eee;
         color: #708090;
     }
     .icon-1x {
         font-size: 24px !important;
+    }
+    .container {
+        padding-top: 20px; 
     }
     a {
         text-decoration: none;
@@ -38,33 +86,32 @@ if (!isset($_SESSION['username'])) {
     .font-weight-bold {
         font-weight: 700 !important;
     }
+    .user-notification-wrapper {
+    display: flex; 
+    align-items: center; 
+    }
+
+    .user-notification-wrapper .nav-link {
+    margin-right: 10px; 
+    display: flex; 
+    align-items: center; 
+    }
+
+    .user-notification-wrapper .nav-link i {
+    font-size: 1rem; 
+    }
+
+    .user-notification-wrapper .nav-link .badge {
+    font-size: 0.8rem; 
+    margin-left: 5px; 
+    }
 </style>
 </head>
 <body>
 <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
 
 <!-- Üst Menü Başlangıcı -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Forum</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Ana Sayfa</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="logout.php">Çıkış yap</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="setprofilephoto.php">Profil Fotoğrafı Ayarla</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<?php echo $statusbar; ?>
 
 
 <!-- Üst Menü Sonu -->
@@ -101,6 +148,7 @@ if (!isset($_SESSION['username'])) {
         include "utility.php";
       PrepareTopicsForFirstLogin($conn);
       $stats = getStats($conn);
+   
       ?>
 
       <!-- Diğer Kartlar Burada Devam Edecek -->

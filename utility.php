@@ -1,5 +1,4 @@
 <?php
-session_start();
 include "conn.php";
 
 
@@ -33,7 +32,7 @@ $conn->set_charset("utf8");
     }
 
     if((int)$_SESSION["level"]>=1){
-    $sql = "SELECT topic_id,post_author, post_title, post_content, post_date FROM topics ORDER BY topic_id DESC LIMIT 5";
+    $sql = "SELECT topic_id,post_author, post_title, post_content, post_date FROM topics ORDER BY topic_id DESC LIMIT 20";
     }
     else{
         $sql = "SELECT topic_id, post_author, post_title, post_content, post_date FROM topics WHERE post_level = 0 ORDER BY topic_id DESC LIMIT 5";
@@ -200,6 +199,7 @@ function getStats($conn) {
         'total_comments' => $totalComments
     );
 }
+
 
 
 ?>

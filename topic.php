@@ -8,6 +8,15 @@ if (!isset($_SESSION['username'])) {
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7YRLH5T99V"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7YRLH5T99V');
+</script>
 <meta charset="utf-8">
 <title>Forum Topic - Forum</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -92,15 +101,17 @@ if (!isset($_SESSION['username'])) {
 <!-- Üst Menü Sonu -->
 
 <?php 
+if((int)$_SESSION["level"]>=1)
         include "conn.php";
-        if (isset($_GET['topic_id'])) {
+        if (isset($_GET['topic_id'])and (int)$_SESSION["level"]>=1) {
             $topic_id = intval($_GET['topic_id']);
         } else {
-            die("topic id yok");
+            die("Sen Kimsin?");
+            header("Location: giris.php");
         }
         include "utility.php";
-        InitTopic($topic_id,$conn);
-        SimulateReplys($topic_id,$conn);
+        InitTopic($topic_id);
+        SimulateReplys($topic_id);
       ?>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
@@ -113,37 +124,16 @@ if (!isset($_SESSION['username'])) {
 <div class="container mt-4" style="padding-left: 0; padding-right: 0;">
   <div class="row" style="margin-left: 0; margin-right: 0;">
     <div class="col-lg-12" style="padding-left: 20; padding-right: 0;">
-      <form id="replyForm" style="display: flex; flex-direction: column; width: 100%;">
-        <textarea id="replyText" class="form-control mb-2" rows="3" placeholder="create reply" required style="width: 100%;"></textarea>
-        <input type="hidden" id="topicId" value="<?php echo htmlspecialchars($topic_id); ?>">
+      <form action="create_reply.php" method="POST" id="replyForm" style="display: flex; flex-direction: column; width: 100%;">
+        <textarea name="body" id="body" class="form-control mb-2" rows="3" placeholder="create reply" required style="width: 100%;"></textarea>
+        <input name="topic_id" type="hidden" id="topic_id" value="<?php echo htmlspecialchars($topic_id); ?>">
+        <input name="author" type="hidden" id="author" value="<?php echo htmlspecialchars($_SESSION['username']); ?>">
         <button type="submit" class="btn btn-primary" style="width: 100%;">Gönder</button>
       </form>
     </div>
   </div>
 </div>
-<script>
-document.getElementById('replyForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Formun varsayılan davranışını engelle
 
-    var replyText = document.getElementById('replyText').value;
-    var topicId = document.getElementById('topicId').value;
 
-    // Ajax ile POST isteği gönder
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'create_reply.php', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            document.getElementById('replyText').value = ''; // Metin kutusunu temizle
-            location.reload(); // Sayfayı yenile
-        } else {
-            alert('Bir hata oluştu: ' + xhr.status);
-        }
-    };
-
-    xhr.send('topic_id=' + encodeURIComponent(topicId) + '&author=' + encodeURIComponent('<?php echo htmlspecialchars($_SESSION["username"]); ?>') + '&body=' + encodeURIComponent(replyText));
-});
-</script>
 
 
